@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz App</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<div class="app">
+<h1>Simple Quiz</h1>
+<div class="quiz">
+<h2 id="question">question goes here</h2>
+<div id="answer-buttons">
+<button class='btn'>Answer 1</button>
+<button class='btn'>Answer 2</button>
+<button class='btn'>Answer 3</button>
+<button class='btn'>Answer 4</button>
+</div>
+<button id='next-btn'>Next</button>
+</div>
+</div>
+<script >
+const questions=[
+{
+question:"Who won album of the year award in Grammy 2025?",
+answers:[
+{text:"Kendrick Lamar",correct:false},
+{text:"Beyonce",correct:true},
+{text:"Taylor Swift",correct:false},
+{text:"SZA",correct:false}
+]},
+{
+question:"Which artist broke records with the 'Eras Tour',becoming the highest-grossing tour of all the time ?",
+answers:[
+{text:"Drake",correct:false},
+{text:"Beyonce",correct:false},
+{text:"Taylor Swift",correct:true},
+{text:"Billie Eillish",correct:false}
+]},
+{
+question:"How many members are there in the Kpop boyband SEVENTEEN?",
+answers:[
+{text:"7",correct:false},
+{text:"17",correct:false},
+{text:"13",correct:true},
+{text:"14",correct:false}
+]},
+{
+question:"which of the following artist was Not a member of the boyband One Direction?",
+answers:[
+{text:"Naill Horan",correct:false},
+{text:"Zayn Mallik",correct:false},
+{text:"James Arthur",correct:true},
+{text:"Louis Tomlinson",correct:false}
+]},
+{
+question:"Whick k-pop group collaborated with Coldplay on the song 'My Universe'?",
+answers:[
+{text:"SEVENTEEN",correct:false},
+{text:"BLACKPINK",correct:false},
+{text:"EXO",correct:false},
+{text:"BTS",correct:true}
+]}
+];
+
+const questionElement=document.getElementById("question");
+const answerButtons=document.getElementById("answer-buttons");
+const nextButton=document.getElementById("next-btn");
+
+let currentQuestionIndex=0;
+let score=0;
+
+function startQuiz(){
+currentQuestionIndex=0;
+score=0;
+nextButton.innerHTML="Next";
+showQuestion();
+}
+
+function showQuestion(){
+resetState();
+let currentQuestion=questions[currentQuestionIndex];
+let questionNo=currentQuestionIndex+1;
+questionElement.innerHTML=questionNo+". "+currentQuestion.question;
+currentQuestion.answers.forEach(answer=>{
+const button=document.createElement("button");
+button.innerHTML=answer.text;
+button.classList.add("btn");
+answerButtons.appendChild(button);
+if(answer.correct){
+button.dataset.correct=answer.correct;
+}
+button.addEventListener("click",selectAnswer);
+});
+}
+function resetState(){
+nextButton.style.display="none";
+while(answerButtons.firstChild){
+answerButtons.removeChild(answerButtons.firstChild);
+}}
+
+function selectAnswer(e){
+const selectedBtn=e.target;
+const isCorrect=selectedBtn.dataset.correct==="true";
+if(isCorrect){
+selectedBtn.classList.add("correct");
+score++;
+}
+else{
+selectedBtn.classList.add("incorrect");
+}
+Array.from(answerButtons.children).forEach(button=>{
+if(button.dataset.correct==="true"){
+button.classList.add("correct");
+}
+button.disabled=true;
+});
+nextButton.style.display="block";
+}
+function showScore(){
+resetState();
+questionElement.innerHTML=`You scored ${score} out of ${questions.length}!`;
+nextButton.innerHTML='Play Again';
+nextButton.style.display="block";
+}
+function handleNextButton(){
+currentQuestionIndex++;
+if(currentQuestionIndex<questions.length){
+showQuestion();
+}
+else{
+showScore();
+}
+}
+nextButton.addEventListener("click",()=>{
+if(currentQuestionIndex<questions.length){
+handleNextButton();
+}
+else{
+startQuiz();
+}
+});
+startQuiz();
+</script>
+</body>
+</html>
